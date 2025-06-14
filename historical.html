@@ -1037,10 +1037,10 @@ h5{
   </div>
 </footer>
 <script>
-  function animateOnScroll() {
+// Animate gallery images on scroll
+function animateGalleryOnScroll() {
   const images = document.querySelectorAll('.gallery-img');
-
-  const triggerBottom = window.innerHeight * 0.85; // Trigger when image is 85% from top of viewport
+  const triggerBottom = window.innerHeight * 0.85;
 
   images.forEach(img => {
     const imgTop = img.getBoundingClientRect().top;
@@ -1048,36 +1048,101 @@ h5{
     if (imgTop < triggerBottom) {
       img.classList.add('animate-in');
     } else {
-      img.classList.remove('animate-in'); // optional: remove if you want animation only once
+      img.classList.remove('animate-in');
     }
   });
 }
 
-// Run on scroll and on page load
-window.addEventListener('scroll', animateOnScroll);
-window.addEventListener('load', animateOnScroll);
-
-
+window.addEventListener('scroll', animateGalleryOnScroll);
+window.addEventListener('load', animateGalleryOnScroll);
 </script>
+
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+// IntersectionObserver for other scroll animations
+document.addEventListener("DOMContentLoaded", () => {
+  const animatedElements = document.querySelectorAll('.animate-on-scroll');
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target); // Animate once only
-        }
-      });
-    }, {
-      threshold: 0.1 // Trigger when 10% of the element is visible
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // Animate once
+      }
     });
-
-    animatedElements.forEach(el => observer.observe(el));
+  }, {
+    threshold: 0.1
   });
+
+  animatedElements.forEach(el => observer.observe(el));
+});
 </script>
 
+<script>
+// Sticky navbar with hide/show behavior
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.getElementById("mainNavbar");
+  const navLinks = document.querySelectorAll(".nav-link");
+  let scrollTimer = null;
+
+  function showNavbar() {
+    navbar.style.top = "0";
+  }
+
+  function hideNavbar() {
+    navbar.style.top = "-80px";
+  }
+
+  function updateActiveLink() {
+    const offset = window.scrollY + 100;
+
+    navLinks.forEach(link => {
+      const sectionId = link.getAttribute("href");
+      if (sectionId.startsWith("#") && document.querySelector(sectionId)) {
+        const section = document.querySelector(sectionId);
+        if (section.offsetTop <= offset && section.offsetTop + section.offsetHeight > offset) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      }
+    });
+  }
+
+  window.addEventListener("scroll", () => {
+    showNavbar();
+
+    if (scrollTimer !== null) {
+      clearTimeout(scrollTimer);
+    }
+
+    scrollTimer = setTimeout(() => {
+      hideNavbar();
+    }, 1500);
+
+    updateActiveLink();
+  });
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", function (e) {
+      const href = this.getAttribute("href");
+      if (href.startsWith("#")) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 70,
+            behavior: "smooth"
+          });
+        }
+
+        // Manually set active
+        navLinks.forEach(l => l.classList.remove("active"));
+        this.classList.add("active");
+      }
+    });
+  });
+});
+</script>
 </body>
 
 </html>
