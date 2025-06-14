@@ -8,12 +8,20 @@
   <link rel="stylesheet" href="bootstrap-5.3.6-dist/css/bootstrap.min.css">
 
 
-  <style>
-    .navbar-nav .nav-link:hover,
-    .navbar-nav .dropdown-menu a:hover,
-    .navbar-nav .nav-link.active {
-      color: orange !important;
-    }
+ <style>
+    
+  #mainNavbar {
+    position: fixed;
+    top: -80px;
+    width: 100%;
+    z-index: 1000;
+    transition: top 0.4s ease-in-out;
+  }
+
+  .nav-link.active {
+    color: #ffc107 !important;
+    font-weight: bold;
+  }
 
     .carousel-caption.caption-bg {
       background-color: rgba(0, 0, 0, 0.6);
@@ -31,6 +39,16 @@
     .carousel-caption p {
       font-size: 1rem;
     }
+    h2{
+  font-weight: bold;
+  font-style: italic;
+}
+h5{
+  font-weight: bold;
+}
+h1{
+  font-weight: bold;
+}
   </style>
 
 </head>
@@ -38,10 +56,10 @@
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="mainNavbar">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <h4>Siquijor Heritage and Antiques</h4>
+        <h2>Siquijor Heritage and Antiques </h2>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +81,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#heritage1"><i class="fas fa-info-circle"></i> About Us</a>
+            <a class="nav-link" href="#history"><i class="fas fa-info-circle"></i>About</a>
           </li>
         </ul>
       </div>
@@ -454,7 +472,7 @@
 
 
   <script src="bootstrap-5.3.6-dist/js/bootstrap.bundle.min.js"></script>
-  <style>
+ <style>
     /* Scroll Animation Initial State */
     .card {
       opacity: 0;
@@ -545,6 +563,71 @@
     });
 
   </script>
+<script>
+  const navbar = document.getElementById("mainNavbar");
+  const navLinks = document.querySelectorAll(".nav-link");
+  let scrollTimer = null;
+  
+  // Function to show navbar
+  function showNavbar() {
+    navbar.style.top = "0";
+  }
+  
+  // Function to hide navbar
+  function hideNavbar() {
+    navbar.style.top = "-80px";
+  }
+  
+  // Scroll listener to handle navbar visibility and link highlighting
+  window.addEventListener("scroll", () => {
+    // Show navbar immediately on scroll
+    showNavbar();
+    
+    // Clear previous timer
+    if (scrollTimer !== null) {
+      clearTimeout(scrollTimer);
+    }
+    
+    // Set timer to hide navbar after 1.5 seconds of no scroll
+    scrollTimer = setTimeout(() => {
+      hideNavbar();
+    }, 1500); // Adjust this delay as needed
+    
+    // Highlight active nav link
+    navLinks.forEach(link => {
+      const sectionId = link.getAttribute("href");
+      if (sectionId.startsWith("#") && document.querySelector(sectionId)) {
+        const section = document.querySelector(sectionId);
+        const offset = window.scrollY + 100;
+        if (section.offsetTop <= offset && section.offsetTop + section.offsetHeight > offset) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      }
+    });
+  });
+  
+  // Smooth scroll + manually set active class on click
+  navLinks.forEach(link => {
+    link.addEventListener("click", function(e) {
+      const href = this.getAttribute("href");
+      if (href.startsWith("#")) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 70,
+            behavior: "smooth"
+          });
+        }
+        // Set active manually
+        navLinks.forEach(l => l.classList.remove("active"));
+        this.classList.add("active");
+      }
+    });
+  });
+</script>
 
 </body>
 
