@@ -10,40 +10,42 @@
 </head>
 
 <body>
-  <style>
-    .navbar-nav .nav-link:hover,
-    .navbar-nav .dropdown-menu a:hover,
-    .navbar-nav .nav-link.active {
-      color: orange !important;
-    }
+  
+<style>
+  #mainNavbar {
 
-    .carousel-caption.caption-bg {
-      background-color: rgba(0, 0, 0, 0.6);
-      color: #fff;
-      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-      max-width: 90%;
-      margin: 0 auto;
-    }
+    position: fixed;
 
-    .carousel-caption h1 {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
+    top: -80px;
+    width: 100%;
+    z-index: 1000;
+    transition: top 0.4s ease-in-out;
+  }
 
-    .carousel-caption p {
-      font-size: 1rem;
-    }
+  .nav-link.active {
+    color: #ffc107 !important;
+    font-weight: bold;
+  }
+    navbar-nav .nav-link:hover,
+.navbar-nav .dropdown-menu a:hover,
+.navbar-nav .nav-link.active {
+  color: orange !important;
+}
+h2{
+  font-weight: bold;
+  font-style: italic;
+}
+h5{
+  font-weight: bold;
+}
+    
   </style>
 
-</head>
-
-<body>
-
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="mainNavbar">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <h4>Siquijor Heritage and Antiques</h4>
+        <h2>Siquijor Heritage and Antiques </h2>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,25 +55,22 @@
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link " href="index.html"><i class="fab fa-home"></i> Home</a>
+            <a class="nav-link" href="index.html"><i class="fab fa-home"></i> Home</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="historical.html"><i class="fas fa-landmark"></i> Heritage</a>
+            <a class="nav-link " href="historical.html"><i class="fas fa-landmark"></i> Heritage</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link active" href="traditional.html"><i class="fas fa-archway"></i> Antiques</a>
+            <a class="nav-link active " href="traditional.html"><i class="fas fa-archway"></i> Antiques</a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="index.html#heritage1" class="py-5 bg-light"><i class="fas fa-info-circle"></i> About Us</a>
-          </li>
+          
         </ul>
       </div>
     </div>
   </nav>
-
   <!-- Historical Sites Section -->
   <section class="container py-5">
     <h2 class="mb-4"><i class="bi bi-geo-alt-fill me-2"></i>Common Tarditional Tools</h2>
@@ -781,6 +780,73 @@ window.addEventListener('load', animateOnScroll);
     });
 
     animatedElements.forEach(el => observer.observe(el));
+  });
+</script>
+<script>
+
+  const navbar = document.getElementById("mainNavbar");
+
+  const navLinks = document.querySelectorAll(".nav-link");
+  let scrollTimer = null;
+
+  // Function to show navbar
+  function showNavbar() {
+    navbar.style.top = "0";
+  }
+
+  // Function to hide navbar
+  function hideNavbar() {
+    navbar.style.top = "-80px";
+  }
+
+  // Scroll listener to handle navbar visibility and link highlighting
+  window.addEventListener("scroll", () => {
+    // Show navbar immediately on scroll
+    showNavbar();
+
+    // Clear previous timer
+    if (scrollTimer !== null) {
+      clearTimeout(scrollTimer);
+    }
+
+    // Set timer to hide navbar after 1.5 seconds of no scroll
+    scrollTimer = setTimeout(() => {
+      hideNavbar();
+    }, 1500); // Adjust this delay as needed
+
+    // Highlight active nav link
+    navLinks.forEach(link => {
+      const sectionId = link.getAttribute("href");
+      if (sectionId.startsWith("#") && document.querySelector(sectionId)) {
+        const section = document.querySelector(sectionId);
+        const offset = window.scrollY + 100;
+        if (section.offsetTop <= offset && section.offsetTop + section.offsetHeight > offset) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      }
+    });
+  });
+
+  // Smooth scroll + manually set active class on click
+  navLinks.forEach(link => {
+    link.addEventListener("click", function (e) {
+      const href = this.getAttribute("href");
+      if (href.startsWith("#")) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 70,
+            behavior: "smooth"
+          });
+        }
+        // Set active manually
+        navLinks.forEach(l => l.classList.remove("active"));
+        this.classList.add("active");
+      }
+    });
   });
 </script>
 
